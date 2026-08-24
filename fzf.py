@@ -6,7 +6,10 @@ SCRIPT_NAME = "fzf"
 SCRIPT_AUTHOR = "Trygve Aaberge <trygveaa@gmail.com>"
 SCRIPT_VERSION = "0.1.0"
 SCRIPT_LICENSE = "MIT"
-SCRIPT_DESC = "Switch buffer using fzf (currently only works inside tmux)"
+SCRIPT_DESC = (
+    "Switch buffer using fzf "
+    "(currently only works inside tmux/zellij)"
+)
 REPO_URL = "https://github.com/trygveaa/weechat-fzf"
 
 
@@ -28,7 +31,7 @@ def fzf_process_cb(
 
 def fzf_command_cb(data: str, buffer: str, args: str) -> int:
     cmd = (
-        "fzf-tmux -- --delimiter='\t' --with-nth=3.. "
+        "fzf --popup -- --delimiter='\t' --with-nth=3.. "
         "--preview='tail -$LINES {2} 2>/dev/null'"
     )
     hook = weechat.hook_process_hashtable(cmd, {"stdin": "1"}, 0, "fzf_process_cb", "")
@@ -63,8 +66,12 @@ def main() -> None:
         return
 
     tmux = weechat.string_eval_expression("${env:TMUX}", {}, {}, {})
-    if not tmux:
-        print_error("Error: fzf.py currently only supports being run inside tmux")
+    zellij = weechat.string_eval_expression("${env:ZELLIJ}", {}, {}, {})
+    if not tmux and not zellij:
+        print_error(
+            "Error: fzf.py currently only supports"
+            " being run inside tmux/zellij"
+        )
         return
 
     weechat.hook_command(SCRIPT_NAME, SCRIPT_DESC, "", "", "", "fzf_command_cb", "")

@@ -2,7 +2,7 @@
 
 Switch buffer in WeeChat using fzf.
 
-Currently requires WeeChat to be run inside tmux, as fzf is opened in a separate tmux pane.
+Currently requires WeeChat to be run inside tmux or zellij, as fzf is opened in a popup window.
 
 ## Installation
 
